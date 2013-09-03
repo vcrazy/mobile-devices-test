@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			body{margin: 0px;}
+			#target{display: inline-block; width: 50px; height: 50px; position: absolute;}
+			#button{display: inline-block; width: 25%; height: 25%; position: absolute; background-color: green; bottom: 0; right: 0;}
+		</style>
+		<script type="text/javascript">
+			var target,
+				orientation = window.orientation;
+
+			function positionTarget(){
+				target.style.marginLeft = Math.round((window.innerWidth - target.clientWidth) / 2) + 'px';
+			}
+
+			function moveTarget(degrees){
+				var maxDegrees = 25,
+					value = ((window.innerWidth - target.clientWidth) / 2);
+
+				degrees = Math.min(degrees, maxDegrees);
+				degrees = Math.max(degrees, - maxDegrees);
+
+				degrees = Math.round(degrees * 10) / 10;
+
+				target.style.marginLeft = Math.round(value + (degrees / maxDegrees) * value) + 'px';
+			}
+
+			window.onload = function(){
+				target = document.getElementById('target');
+
+				positionTarget();
+
+				window.addEventListener('deviceorientation', function(event) {
+					var value = 0;
+
+					switch(orientation){
+						case 90:
+							value = event.beta;
+							break;
+						case -90:
+							value = - event.beta;
+							break;
+						default:
+							value = event.gamma;
+							break;
+					}
+					moveTarget(value);
+				}, false);
+
+				window.addEventListener('orientationchange', function(event) {
+					orientation = event;
+				}, false);
+			};
+		</script>
+	</head>
+	<body>
+		<img id="target" src="target.png" />
+		<div id="button"></div>
+	</body>
+</html>
